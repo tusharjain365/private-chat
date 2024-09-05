@@ -35,4 +35,9 @@ class PrivateChatEvent implements ShouldBroadcast
     {
         return new PrivateChannel('Chat.' . $this->chat['session_id']);
     }
+
+    public function broadcastAs()
+    {
+        return 'private-chat-event';
+    }
 }

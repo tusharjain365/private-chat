@@ -20,7 +20,7 @@ class Session extends Model
     }
 
     // Methods for blocking and unblocking
-    public function block()
+    public function setBlockStatus()
     {
         $this->update([
             'block' => true,
