@@ -8,9 +8,10 @@ class Session extends Model
 {
     protected $guarded = [];
 
+    // Define the relationships
     public function chats()
     {
-        return $this->hasManyThrough(Chat::class, Message::class);
+        return $this->hasManyThrough(Chat::class, Message::class, 'session_id', 'message_id');
     }
 
     public function messages()
@@ -18,6 +19,24 @@ class Session extends Model
         return $this->hasMany(Message::class);
     }
 
+    // Methods for blocking and unblocking
+    public function block()
+    {
+        $this->update([
+            'block' => true,
+            'blocked_by' => auth()->id()
+        ]);
+    }
+
+    public function unblock()
+    {
+        $this->update([
+            'block' => false,
+            'blocked_by' => null
+        ]);
+    }
+
+    // Methods to delete chats and messages
     public function deleteChats()
     {
         $this->chats()->where('user_id', auth()->id())->delete();
@@ -27,18 +46,5 @@ class Session extends Model
     {
         $this->messages()->delete();
     }
-
-    public function block()
-    {
-        $this->block = true;
-        $this->blocked_by = auth()->id();
-        $this->save();
-    }
-
-    public function unblock()
-    {
-        $this->block = false;
-        $this->blocked_by = null;
-        $this->save();
-    }
 }
+
